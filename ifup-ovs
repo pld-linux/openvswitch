@@ -1,0 +1,54 @@
+#!/bin/sh
+
+# Copyright (c) 2011 Alexey I. Froloff.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at:
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+
+. /etc/sysconfig/network
+. /etc/rc.d/init.d/functions
+. /lib/rc-scripts/functions.network
+
+CONFIG=$1
+source_config
+
+if [ "foo$2" = "fooboot" ] && is_no "${ONBOOT}"; then
+	exit
+fi
+
+case "$TYPE" in
+	OVSBridge)
+		ovs-vsctl -- --may-exist add-br "$DEVICE" $OVS_OPTIONS ${OVS_EXTRA:+-- $OVS_EXTRA}
+		;;
+	OVSPort)
+		ovs-vsctl br-exists "$OVS_BRIDGE" || /sbin/ifup "$OVS_BRIDGE"
+		ovs-vsctl -- --may-exist add-port "$OVS_BRIDGE" "$DEVICE" $OVS_OPTIONS ${OVS_EXTRA:+-- $OVS_EXTRA}
+		;;
+	OVSIntPort)
+		ovs-vsctl br-exists "$OVS_BRIDGE" || /sbin/ifup "$OVS_BRIDGE"
+		ovs-vsctl -- --may-exist add-port "$OVS_BRIDGE" "$DEVICE" $OVS_OPTIONS -- set Interface "$DEVICE" type=internal ${OVS_EXTRA:+-- $OVS_EXTRA}
+		;;
+	OVSBond)
+		ovs-vsctl br-exists "$OVS_BRIDGE" || /sbin/ifup "$OVS_BRIDGE"
+		for _iface in $BOND_IFACES; do
+			/sbin/ifup ${_iface}
+		done
+		ovs-vsctl -- --fake-iface add-bond "$OVS_BRIDGE" "$DEVICE" ${BOND_IFACES} $OVS_OPTIONS ${OVS_EXTRA:+-- $OVS_EXTRA}
+		;;
+	*)
+		echo "Invalid OVS interface type $TYPE"
+		exit 1
+		;;
+esac
+
+exit 0
