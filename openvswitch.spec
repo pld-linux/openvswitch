@@ -30,7 +30,7 @@ Name:		openvswitch
 Version:	1.4.0
 Release:	%{rel}
 License:	Apache v2.0
-Group:		Applications
+Group:		Networking/Daemons
 Source0:	http://openvswitch.org/releases/%{name}-%{version}.tar.gz
 # Source0-md5:	3847c60af329bfe81ff7220b9f489fa5
 Source1:	ifdown-ovs
@@ -73,9 +73,8 @@ Nexus 1000V.
 #%description -l pl.UTF-8
 
 %package test
-######		Unknown group!
 Summary:	Open vSwitch test package
-Group:		-
+Group:		Networking/Admin
 Requires:	python-modules
 
 %description test
@@ -109,15 +108,13 @@ cp %{SOURCE3} .
 
 %build
 %configure \
+%if %{with kernel}
 	--with-linux=%{_kernelsrcdir} \
 	--with-linux-source=%{_kernelsrcdir}
+%endif
 
 %{__make}
 
-%if %{with kernel}
-%endif
-%if %{with userspace}
-%endif
 %install
 rm -rf $RPM_BUILD_ROOT
 
@@ -170,7 +167,8 @@ fi
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc README.PLD
+%doc AUTHORS DESIGN INSTALL.KVM INSTALL.SSL INSTALL.bridge INSTALL.userspace NEWS README
+%doc REPORTING-BUGS WHY-OVS README.PLD
 %attr(755,root,root) /lib/rc-scripts/ifdown-ovs
 %attr(755,root,root) /lib/rc-scripts/ifup-ovs
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/openvswitch
