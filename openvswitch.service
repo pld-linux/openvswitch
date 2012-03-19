@@ -1,5 +1,6 @@
 [Unit]
 Description=Open vSwitch switch
+Requires=network.target
 After=network.target named.service remote-fs.target syslog.target
 
 [Service]
