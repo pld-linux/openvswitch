@@ -188,7 +188,6 @@ fi
 %attr(755,root,root) %{_bindir}/ovs-pcap
 %attr(755,root,root) %{_bindir}/ovs-pki
 %attr(755,root,root) %{_bindir}/ovs-tcpundump
-%attr(755,root,root) %{_bindir}/ovs-vlan-test
 %attr(755,root,root) %{_bindir}/ovs-vsctl
 %attr(755,root,root) %{_bindir}/ovsdb-client
 %attr(755,root,root) %{_bindir}/ovsdb-tool
@@ -225,6 +224,7 @@ fi
 %files test
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/ovs-test
+%attr(755,root,root) %{_bindir}/ovs-vlan-test
 %{py_sitescriptdir}/ovstest
 %{_mandir}/man8/ovs-test.8*
 %endif
