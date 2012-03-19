@@ -1,5 +1,5 @@
 [Unit]
-Description=
+Description=Open vSwitch switch
 After=network.target named.service remote-fs.target syslog.target
 
 [Service]
