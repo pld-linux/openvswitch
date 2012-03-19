@@ -7,8 +7,8 @@
 
 ### BEGIN INIT INFO
 # Provides:          openvswitch-switch
-# Required-Start:
-# Required-Stop:
+# Required-Start:    $network $named $remote_fs $syslog
+# Required-Stop:     $remote_fs
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Open vSwitch switch
@@ -42,9 +42,22 @@ else
 fi
 
 start () {
-	if ! $ovs_ctl load-kmod; then
-		return 1
+	# Check if the service is already running?
+	if [ -f /var/lock/subsys/openvswitch ]; then
+		msg_already_running "Open vSwitch switch"
+		return
 	fi
+
+	show "Loading Open vSwitch kernel modules"
+	busy
+	if ! $ovs_ctl load-kmod; then
+		fail
+		RETVAL=1
+		return
+	fi
+	ok
+	msg_starting "Open vSwitch switch"
+	busy
 	$ovs_ctl ${1:-start} \
 		--system-id=random \
 		--force-corefiles=$FORCE_COREFILES \
@@ -52,45 +65,57 @@ start () {
 		--ovs-vswitchd-priority=$VSWITCHD_PRIORITY \
 		--mlockall=$VSWITCHD_MLOCKALL \
 		$OPENVSWITCH_OPTIONS
-
-	$ovs_ctl --protocol=gre enable-protocol
-
-	touch /var/lock/subsys/openvswitch
+	RETVAL=$?
+	if [ $RETVAL -eq 0 ]; then
+		$ovs_ctl --protocol=gre enable-protocol
+		[ $? -eq 0 ] || RETVAL=$?
+	fi
+	if [ $RETVAL -eq 0 ]; then
+		ok
+		touch /var/lock/subsys/openvswitch
+	else
+		fail
+	fi
 }
 
 stop () {
+	if [ ! -f /var/lock/subsys/openvswitch ]; then
+		msg_not_running "Open vSwitch switch"
+		return
+	fi
+
+	msg_stopping "Open vSwitch switch"
+	busy
 	$ovs_ctl stop
+	ok
 	rm -f /var/lock/subsys/openvswitch
 }
 
-case $1 in
-    start)
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
         start
         ;;
-    stop)
+  stop)
         stop
         ;;
-    restart)
+  restart)
         stop
         start
         ;;
-    reload|force-reload)
-        # Nothing to do.
-        ;;
-    status)
+  status)
         $ovs_ctl status
         ;;
-    version)
+  version)
         $ovs_ctl version
         ;;
-    force-reload-kmod)
+  force-reload-kmod)
         start force-reload-kmod
         ;;
-    help)
-        printf "$0 [start|stop|restart|reload|force-reload|status|version|force-reload-kmod]\n"
-        ;;
-    *)
-        printf "Unknown command: $1\n"
-        exit 1
-        ;;
+  *)
+	msg_usage "$0 {start|stop|restart|status|version|force-reload-kmod}"
+	exit 3
 esac
+
+exit $RETVAL
