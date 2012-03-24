@@ -179,7 +179,13 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/openvswitch
 %{systemdtmpfilesdir}/openvswitch.conf
 %{systemdunitdir}/openvswitch.service
-%{_datadir}/%{name}
+%dir %{_datadir}/%{name}
+%{_datadir}/%{name}/pki
+%dir %{_datadir}/%{name}/scripts
+%attr(755,root,root) %{_datadir}/%{name}/scripts/*
+%{_datadir}/%{name}/ovsdbmonitor
+%{_datadir}/%{name}/bugtool-plugins
+%{_datadir}/%{name}/vswitch.ovsschema
 
 %attr(754,root,root) /etc/rc.d/init.d/openvswitch
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/openvswitch
