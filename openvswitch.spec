@@ -44,20 +44,25 @@ Source7:	%{name}.init
 #Source9:	openvswitch-ipsec.init
 Source10:	%{name}.service
 URL:		http://openvswitch.org/
+BuildRequires:	graphviz
+BuildRequires:	groff
+BuildRequires:	openssl-devel
+BuildRequires:	openssl-tools
+BuildRequires:	pkgconfig
 BuildRequires:	python-distribute
-BuildRequires:	rpm-pythonprov
+BuildRequires:	python-PyQt4-devel
+BuildRequires:	python-PyQt4-devel-tools
+BuildRequires:	python-TwistedConch
+BuildRequires:	python-TwistedCore
 BuildRequires:	rpmbuild(macros) >= 1.647
+BuildRequires:	rpm-pythonprov
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 %endif
 Requires(post,preun):	/sbin/chkconfig
-#BuildRequires:	-
 Requires:	python-modules
 Requires:	rc-scripts
-#Requires(postun):	-
-#Requires(pre,post):	-
-#Requires(preun):	-
-#Requires:	-
+Requires:	systemd-units
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -191,6 +196,7 @@ fi
 %attr(755,root,root) %{_bindir}/ovs-vsctl
 %attr(755,root,root) %{_bindir}/ovsdb-client
 %attr(755,root,root) %{_bindir}/ovsdb-tool
+%attr(755,root,root) %{_bindir}/ovsdbmonitor
 %attr(755,root,root) %{_sbindir}/ovs-brcompatd
 %attr(755,root,root) %{_sbindir}/ovs-bugtool
 %attr(755,root,root) %{_sbindir}/ovs-vlan-bug-workaround
@@ -202,6 +208,7 @@ fi
 %{_mandir}/man1/ovsdb-client.1*
 %{_mandir}/man1/ovsdb-server.1*
 %{_mandir}/man1/ovsdb-tool.1*
+%{_mandir}/man1/ovsdbmonitor.1*
 %{_mandir}/man5/ovs-vswitchd.conf.db.5*
 %{_mandir}/man8/ovs-appctl.8*
 %{_mandir}/man8/ovs-brcompatd.8*
