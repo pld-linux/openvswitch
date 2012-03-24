@@ -55,6 +55,7 @@ TYPE=OVSBridge
 BOOTPROTO=static
 IPADDR=A.B.C.D/XX
 HOTPLUG=no
+HANDLING=1
 
 
 Adding physical eth0 to ovsbridge0 described above:
