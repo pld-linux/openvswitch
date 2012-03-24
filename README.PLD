@@ -68,6 +68,7 @@ TYPE=OVSPort
 OVS_BRIDGE=ovsbridge0
 BOOTPROTO=none
 HOTPLUG=no
+HANDLING=1
 
 
 Tagged VLAN interface on top of ovsbridge0:
@@ -83,6 +84,7 @@ OVS_BRIDGE=ovsbridge0
 OVS_OPTIONS="tag=100"
 OVS_EXTRA="set Interface $DEVICE external-ids:iface-id=$(hostname -s)-$DEVICE-vif"
 HOTPLUG=no
+HANDLING=1
 
 
 Bonding:
@@ -97,8 +99,10 @@ BOOTPROTO=none
 BOND_IFACES="gige-1b-0 gige-1b-1 gige-21-0 gige-21-1"
 OVS_OPTIONS="bond_mode=balance-tcp lacp=active"
 HOTPLUG=no
+HANDLING=1
 
 ==> ifcfg-gige-* <==
 DEVICE=gige-*
 ONBOOT=yes
 HOTPLUG=no
+HANDLING=1

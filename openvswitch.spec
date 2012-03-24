@@ -169,6 +169,12 @@ fi
 %postun
 %systemd_reload
 
+%post	-n kernel%{_alt_kernel}-net-openvswitch
+%depmod %{_kernel_ver}
+
+%postun	-n kernel%{_alt_kernel}-net-openvswitch
+%depmod %{_kernel_ver}
+
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
