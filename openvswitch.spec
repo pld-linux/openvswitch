@@ -23,7 +23,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	0.1
+%define		rel	0.2
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
 Name:		openvswitch
@@ -43,19 +43,23 @@ Source7:	%{name}.init
 #Source8:	openvswitch-controller.init
 #Source9:	openvswitch-ipsec.init
 Source10:	%{name}.service
+Source11:	ovsdbmonitor.desktop
+#Patch0: linux-3.3.patch
+Patch1:		ovsdbmonitor-move-to-its-own-data-directory.patch
 URL:		http://openvswitch.org/
+BuildRequires:	Zope-Interface
 BuildRequires:	graphviz
 BuildRequires:	groff
 BuildRequires:	openssl-devel
 BuildRequires:	openssl-tools
 BuildRequires:	pkgconfig
-BuildRequires:	python-distribute
 BuildRequires:	python-PyQt4-devel
 BuildRequires:	python-PyQt4-devel-tools
 BuildRequires:	python-TwistedConch
 BuildRequires:	python-TwistedCore
-BuildRequires:	rpmbuild(macros) >= 1.647
+BuildRequires:	python-distribute
 BuildRequires:	rpm-pythonprov
+BuildRequires:	rpmbuild(macros) >= 1.647
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 %endif
@@ -77,10 +81,36 @@ Nexus 1000V.
 
 #%description -l pl.UTF-8
 
+%package -n python-openvswitch
+Summary:	Open vSwitch python bindings
+Group:		Development/Languages/Python
+Requires:	python-modules
+
+%description -n python-openvswitch
+Python bindings for the Open vSwitch database
+
+%package -n ovsdbmonitor
+Summary:	Open vSwitch graphical monitoring tool
+Group:		Networking/Admin
+Requires:	Zope-Interface
+Requires:	python-PyQt4-devel-tools
+Requires:	python-TwistedConch
+Requires:	python-TwistedCore
+Requires:	python-modules
+Requires:	python-openvswitch = %{version}-%{release}
+
+%description -n ovsdbmonitor
+A GUI tool for monitoring and troubleshooting local or remote Open
+vSwitch installations. It presents GUI tables that graphically
+represent an Open vSwitch kernel flow table (similar to "ovs-dpctl
+dump-flows") and Open vSwitch database contents (similar to "ovs-vsctl
+list <table>").
+
 %package test
 Summary:	Open vSwitch test package
 Group:		Networking/Admin
 Requires:	python-modules
+Requires:	python-openvswitch = %{version}-%{release}
 
 %description test
 This package contains utilities that are useful to diagnose
@@ -109,9 +139,14 @@ Ten pakiet zawiera moduł jądra Linuksa.
 
 %prep
 %setup -q
+#%patch0 -p1
+%patch1 -p1
 cp %{SOURCE3} .
 
 %build
+%{__aclocal} -I m4
+%{__automake}
+%{__autoconf}
 %configure \
 %if %{with kernel}
 	--with-linux=%{_kernelsrcdir} \
@@ -125,7 +160,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with userspace}
 install -d $RPM_BUILD_ROOT{%{py_sitescriptdir},%{systemdunitdir},%{systemdtmpfilesdir}} \
-	$RPM_BUILD_ROOT{/etc/{sysconfig,rc.d/init.d,logrotate.d},/lib/rc-scripts}
+	$RPM_BUILD_ROOT{/etc/{sysconfig,rc.d/init.d,logrotate.d},/lib/rc-scripts} \
+	$RPM_BUILD_ROOT%{_desktopdir}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -137,12 +173,16 @@ install -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/openvswitch.conf
 install -p %{SOURCE6} $RPM_BUILD_ROOT/etc/sysconfig/openvswitch
 install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/openvswitch
 install -p %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}/openvswitch.service
+install -p %{SOURCE11} $RPM_BUILD_ROOT%{_desktopdir}
 
 %{__mv} $RPM_BUILD_ROOT%{_datadir}/%{name}/python/{ovs,ovstest} $RPM_BUILD_ROOT%{py_sitescriptdir}
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/%{name}/python
 
 %py_ocomp $RPM_BUILD_ROOT%{py_sitescriptdir}
 %py_comp $RPM_BUILD_ROOT%{py_sitescriptdir}
+
+%py_ocomp $RPM_BUILD_ROOT%{_datadir}/ovsdbmonitor
+%py_comp $RPM_BUILD_ROOT%{_datadir}/ovsdbmonitor
 %endif
 
 %if %{with kernel}
@@ -189,7 +229,6 @@ fi
 %{_datadir}/%{name}/pki
 %dir %{_datadir}/%{name}/scripts
 %attr(755,root,root) %{_datadir}/%{name}/scripts/*
-%{_datadir}/%{name}/ovsdbmonitor
 %{_datadir}/%{name}/bugtool-plugins
 %{_datadir}/%{name}/vswitch.ovsschema
 
@@ -208,7 +247,6 @@ fi
 %attr(755,root,root) %{_bindir}/ovs-vsctl
 %attr(755,root,root) %{_bindir}/ovsdb-client
 %attr(755,root,root) %{_bindir}/ovsdb-tool
-%attr(755,root,root) %{_bindir}/ovsdbmonitor
 %attr(755,root,root) %{_sbindir}/ovs-brcompatd
 %attr(755,root,root) %{_sbindir}/ovs-bugtool
 %attr(755,root,root) %{_sbindir}/ovs-vlan-bug-workaround
@@ -220,7 +258,6 @@ fi
 %{_mandir}/man1/ovsdb-client.1*
 %{_mandir}/man1/ovsdb-server.1*
 %{_mandir}/man1/ovsdb-tool.1*
-%{_mandir}/man1/ovsdbmonitor.1*
 %{_mandir}/man5/ovs-vswitchd.conf.db.5*
 %{_mandir}/man8/ovs-appctl.8*
 %{_mandir}/man8/ovs-brcompatd.8*
@@ -235,10 +272,20 @@ fi
 %{_mandir}/man8/ovs-vlan-test.8*
 %{_mandir}/man8/ovs-vsctl.8*
 %{_mandir}/man8/ovs-vswitchd.8*
+
+%files -n python-openvswitch
+%defattr(644,root,root,755)
 %dir %{py_sitescriptdir}/ovs
 %{py_sitescriptdir}/ovs/*.py*
 %dir %{py_sitescriptdir}/ovs/db
 %{py_sitescriptdir}/ovs/db/*.py*
+
+%files -n ovsdbmonitor
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/ovsdbmonitor
+%{_datadir}/ovsdbmonitor
+%{_desktopdir}/ovsdbmonitor.desktop
+%{_mandir}/man1/ovsdbmonitor.1*
 
 %files test
 %defattr(644,root,root,755)
