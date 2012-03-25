@@ -1,7 +1,7 @@
 [Unit]
 Description=Open vSwitch switch
-Requires=network.target
-After=network.target named.service remote-fs.target syslog.target
+After=syslog.target
+Before=network.target
 
 [Service]
 Type=forking
