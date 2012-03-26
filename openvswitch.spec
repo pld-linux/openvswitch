@@ -23,7 +23,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	0.2
+%define		rel	0.5
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
 Name:		openvswitch
@@ -44,10 +44,12 @@ Source7:	%{name}.init
 #Source9:	openvswitch-ipsec.init
 Source10:	%{name}.service
 Source11:	ovsdbmonitor.desktop
-#Patch0: linux-3.3.patch
+Patch0:		linux-3.3.patch
 Patch1:		ovsdbmonitor-move-to-its-own-data-directory.patch
 URL:		http://openvswitch.org/
 BuildRequires:	Zope-Interface
+BuildRequires:	automake
+BuildRequires:	autoconf
 BuildRequires:	graphviz
 BuildRequires:	groff
 BuildRequires:	openssl-devel
@@ -139,7 +141,7 @@ Ten pakiet zawiera moduł jądra Linuksa.
 
 %prep
 %setup -q
-#%patch0 -p1
+%patch0 -p1
 %patch1 -p1
 cp %{SOURCE3} .
 
