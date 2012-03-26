@@ -23,26 +23,27 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	0.5
+%define		rel	1
+%define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
-Name:		openvswitch
+Name:		%{pname}%{_alt_kernel}
 Version:	1.4.0
 Release:	%{rel}
 License:	Apache v2.0
 Group:		Networking/Daemons
-Source0:	http://openvswitch.org/releases/%{name}-%{version}.tar.gz
+Source0:	http://openvswitch.org/releases/%{pname}-%{version}.tar.gz
 # Source0-md5:	3847c60af329bfe81ff7220b9f489fa5
 Source1:	ifdown-ovs
 Source2:	ifup-ovs
 Source3:	README.PLD
-Source4:	%{name}.logrotate
-Source5:	%{name}.tmpfiles
-Source6:	%{name}.sysconfig
-Source7:	%{name}.init
+Source4:	%{pname}.logrotate
+Source5:	%{pname}.tmpfiles
+Source6:	%{pname}.sysconfig
+Source7:	%{pname}.init
 #Source8:	openvswitch-controller.init
 #Source9:	openvswitch-ipsec.init
-Source10:	%{name}.service
+Source10:	%{pname}.service
 Source11:	ovsdbmonitor.desktop
 Patch0:		linux-3.3.patch
 Patch1:		ovsdbmonitor-move-to-its-own-data-directory.patch
@@ -69,7 +70,7 @@ Requires(post,preun):	/sbin/chkconfig
 Requires:	python-modules
 Requires:	rc-scripts
 Requires:	systemd-units
-BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 
 %description
 Open vSwitch is a production quality, multilayer virtual switch
@@ -177,8 +178,8 @@ install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/openvswitch
 install -p %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}/openvswitch.service
 install -p %{SOURCE11} $RPM_BUILD_ROOT%{_desktopdir}
 
-%{__mv} $RPM_BUILD_ROOT%{_datadir}/%{name}/python/{ovs,ovstest} $RPM_BUILD_ROOT%{py_sitescriptdir}
-%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/%{name}/python
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/%{pname}/python/{ovs,ovstest} $RPM_BUILD_ROOT%{py_sitescriptdir}
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/%{pname}/python
 
 %py_ocomp $RPM_BUILD_ROOT%{py_sitescriptdir}
 %py_comp $RPM_BUILD_ROOT%{py_sitescriptdir}
@@ -227,12 +228,12 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/openvswitch
 %{systemdtmpfilesdir}/openvswitch.conf
 %{systemdunitdir}/openvswitch.service
-%dir %{_datadir}/%{name}
-%{_datadir}/%{name}/pki
-%dir %{_datadir}/%{name}/scripts
-%attr(755,root,root) %{_datadir}/%{name}/scripts/*
-%{_datadir}/%{name}/bugtool-plugins
-%{_datadir}/%{name}/vswitch.ovsschema
+%dir %{_datadir}/%{pname}
+%{_datadir}/%{pname}/pki
+%dir %{_datadir}/%{pname}/scripts
+%attr(755,root,root) %{_datadir}/%{pname}/scripts/*
+%{_datadir}/%{pname}/bugtool-plugins
+%{_datadir}/%{pname}/vswitch.ovsschema
 
 %attr(754,root,root) /etc/rc.d/init.d/openvswitch
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/openvswitch
