@@ -23,7 +23,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	2
+%define		rel	3
 %define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
@@ -301,5 +301,6 @@ fi
 %if %{with kernel}
 %files -n kernel%{_alt_kernel}-net-openvswitch
 %defattr(644,root,root,755)
+%dir /lib/modules/%{_kernel_ver}/kernel/net/openvswitch
 /lib/modules/%{_kernel_ver}/kernel/net/openvswitch/*.ko*
 %endif
