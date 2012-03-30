@@ -7,8 +7,8 @@
 
 ### BEGIN INIT INFO
 # Provides:          openvswitch-switch
-# Required-Start:    $network $named $remote_fs $syslog
-# Required-Stop:     $remote_fs
+# Required-Start:    $syslog
+# Required-Stop:     
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Open vSwitch switch
@@ -30,16 +30,6 @@ VSWITCHD_MLOCKALL="yes"
 [ -f /etc/sysconfig/openvswitch ] && . /etc/sysconfig/openvswitch
 
 ovs_ctl=/usr/share/openvswitch/scripts/ovs-ctl
-
-# Check that networking is up.
-if is_yes "${NETWORKING}"; then
-	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status -a "$1" != init ]; then
-		msg_network_down "Open vSwitch switch"
-		exit 1
-	fi
-else
-	exit 0
-fi
 
 start () {
 	# Check if the service is already running?
