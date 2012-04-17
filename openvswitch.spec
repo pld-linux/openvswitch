@@ -23,7 +23,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	5
+%define		rel	6
 %define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
@@ -67,9 +67,10 @@ BuildRequires:	rpmbuild(macros) >= 1.647
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 %endif
 Requires(post,preun):	/sbin/chkconfig
+Requires(post,preun,postun):	systemd-units >= 38
 Requires:	python-modules
 Requires:	rc-scripts
-Requires:	systemd-units
+Requires:	systemd-units >= 38
 BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 
 %description
