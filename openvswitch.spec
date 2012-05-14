@@ -23,17 +23,17 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	7
+%define		rel	1
 %define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
 Name:		%{pname}%{_alt_kernel}
-Version:	1.4.0
+Version:	1.4.1
 Release:	%{rel}
 License:	Apache v2.0
 Group:		Networking/Daemons
 Source0:	http://openvswitch.org/releases/%{pname}-%{version}.tar.gz
-# Source0-md5:	3847c60af329bfe81ff7220b9f489fa5
+# Source0-md5:	6f0e1a3ac032bfacff290016583f2b0f
 Source1:	ifdown-ovs
 Source2:	ifup-ovs
 Source3:	README.PLD
@@ -165,7 +165,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 install -d $RPM_BUILD_ROOT{%{py_sitescriptdir},%{systemdunitdir},%{systemdtmpfilesdir}} \
 	$RPM_BUILD_ROOT{/etc/{sysconfig,rc.d/init.d,logrotate.d},/lib/rc-scripts} \
-	$RPM_BUILD_ROOT%{_desktopdir}
+	$RPM_BUILD_ROOT{%{_desktopdir},%{_datadir}/%{pname}/pki}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
