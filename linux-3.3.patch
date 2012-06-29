@@ -12,7 +12,7 @@
  
      # If the bridge module is loaded, then that might be blocking
      # openvswitch_mod.  Try to unload it, if there are no bridges.
-@@ -48,11 +49,12 @@
+@@ -48,15 +49,16 @@
      action "removing bridge module" rmmod bridge || return 1
  
      # Try loading openvswitch_mod again.
@@ -21,6 +21,10 @@
  }
  
  insert_brcompat_mod_if_required () {
+     if test -e /sys/module/bridge; then
+         log_warning_msg "bridge module is loaded, not loading brcompat_mod"
+         return 1
+     fi
      test -e /sys/module/brcompat_mod && return 0
 +    test -e /sys/module/openvswitch && return 0
      action "Inserting brcompat module" modprobe brcompat_mod

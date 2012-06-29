@@ -23,17 +23,17 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	4
+%define		rel	1
 %define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
 Name:		%{pname}%{_alt_kernel}
-Version:	1.5.0
+Version:	1.6.1
 Release:	%{rel}
 License:	Apache v2.0
 Group:		Networking/Daemons
 Source0:	http://openvswitch.org/releases/%{pname}-%{version}.tar.gz
-# Source0-md5:	c6ca6a0f6707ae80f62a7838de1226d3
+# Source0-md5:	1e4c4ccf55096c8dbf5d35b9725447a3
 Source1:	ifdown-ovs
 Source2:	ifup-ovs
 Source3:	README.PLD
