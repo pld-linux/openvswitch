@@ -23,7 +23,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	3
+%define		rel	4
 %define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
