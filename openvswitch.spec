@@ -23,7 +23,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	1
+%define		rel	2
 %define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
@@ -199,7 +199,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add openvswitch
-%service openvswitch restart
+NORESTART=1
 %systemd_post openvswitch.service
 
 %preun
