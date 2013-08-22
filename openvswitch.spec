@@ -23,17 +23,17 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	4
+%define		rel	1
 %define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
 Name:		%{pname}%{_alt_kernel}
-Version:	1.6.1
+Version:	1.10.0
 Release:	%{rel}
 License:	Apache v2.0
 Group:		Networking/Daemons
 Source0:	http://openvswitch.org/releases/%{pname}-%{version}.tar.gz
-# Source0-md5:	1e4c4ccf55096c8dbf5d35b9725447a3
+# Source0-md5:	fe8b49efe9f86b57abab00166b971106
 Source1:	ifdown-ovs
 Source2:	ifup-ovs
 Source3:	README.PLD
@@ -45,8 +45,7 @@ Source7:	%{pname}.init
 #Source9:	openvswitch-ipsec.init
 Source10:	%{pname}.service
 Source11:	ovsdbmonitor.desktop
-Patch0:		linux-3.3.patch
-Patch1:		ovsdbmonitor-move-to-its-own-data-directory.patch
+Patch0:		fix-man-typo.patch
 URL:		http://openvswitch.org/
 BuildRequires:	Zope-Interface
 BuildRequires:	automake
@@ -65,6 +64,8 @@ BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.647
 %if %{with kernel}
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
+%else
+Requires:	uname(release) >= 3.3
 %endif
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
@@ -144,7 +145,6 @@ Ten pakiet zawiera moduł jądra Linuksa.
 %prep
 %setup -q -n %{pname}-%{version}
 %patch0 -p1
-%patch1 -p1
 cp %{SOURCE3} .
 
 %build
@@ -191,8 +191,7 @@ install -p %{SOURCE11} $RPM_BUILD_ROOT%{_desktopdir}
 
 %if %{with kernel}
 cd datapath/linux
-%install_kernel_modules -m brcompat_mod -d kernel/net/openvswitch
-%install_kernel_modules -m openvswitch_mod -d kernel/net/openvswitch
+%install_kernel_modules -m openvswitch -d kernel/net/openvswitch
 %endif
 
 %clean
@@ -222,8 +221,9 @@ fi
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS DESIGN INSTALL.KVM INSTALL.SSL INSTALL.bridge INSTALL.userspace NEWS README
-%doc REPORTING-BUGS WHY-OVS README.PLD
+%doc INSTALL INSTALL.KVM INSTALL.SSL INSTALL.Libvirt INSTALL.XenServer INSTALL.userspace
+%doc AUTHORS DESIGN NEWS README IntegrationGuide OPENFLOW-1.1+
+%doc REPORTING-BUGS WHY-OVS README.PLD FAQ
 %attr(755,root,root) /lib/rc-scripts/ifdown-ovs
 %attr(755,root,root) /lib/rc-scripts/ifup-ovs
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/openvswitch
@@ -243,7 +243,9 @@ fi
 %attr(755,root,root) %{_bindir}/ovs-benchmark
 %attr(755,root,root) %{_bindir}/ovs-controller
 %attr(755,root,root) %{_bindir}/ovs-dpctl
+%attr(755,root,root) %{_bindir}/ovs-l3ping
 %attr(755,root,root) %{_bindir}/ovs-ofctl
+%attr(755,root,root) %{_bindir}/ovs-parse-backtrace
 %attr(755,root,root) %{_bindir}/ovs-parse-leaks
 %attr(755,root,root) %{_bindir}/ovs-pcap
 %attr(755,root,root) %{_bindir}/ovs-pki
@@ -251,7 +253,6 @@ fi
 %attr(755,root,root) %{_bindir}/ovs-vsctl
 %attr(755,root,root) %{_bindir}/ovsdb-client
 %attr(755,root,root) %{_bindir}/ovsdb-tool
-%attr(755,root,root) %{_sbindir}/ovs-brcompatd
 %attr(755,root,root) %{_sbindir}/ovs-bugtool
 %attr(755,root,root) %{_sbindir}/ovs-vlan-bug-workaround
 %attr(755,root,root) %{_sbindir}/ovs-vswitchd
@@ -264,12 +265,13 @@ fi
 %{_mandir}/man1/ovsdb-tool.1*
 %{_mandir}/man5/ovs-vswitchd.conf.db.5*
 %{_mandir}/man8/ovs-appctl.8*
-%{_mandir}/man8/ovs-brcompatd.8*
 %{_mandir}/man8/ovs-bugtool.8*
 %{_mandir}/man8/ovs-controller.8*
 %{_mandir}/man8/ovs-ctl.8*
 %{_mandir}/man8/ovs-dpctl.8*
+%{_mandir}/man8/ovs-l3ping.8*
 %{_mandir}/man8/ovs-ofctl.8*
+%{_mandir}/man8/ovs-parse-backtrace.8*
 %{_mandir}/man8/ovs-parse-leaks.8*
 %{_mandir}/man8/ovs-pki.8*
 %{_mandir}/man8/ovs-vlan-bug-workaround.8*
@@ -283,6 +285,8 @@ fi
 %{py_sitescriptdir}/ovs/*.py*
 %dir %{py_sitescriptdir}/ovs/db
 %{py_sitescriptdir}/ovs/db/*.py*
+%dir %{py_sitescriptdir}/ovs/unixctl
+%{py_sitescriptdir}/ovs/unixctl/*.py*
 
 %files -n ovsdbmonitor
 %defattr(644,root,root,755)

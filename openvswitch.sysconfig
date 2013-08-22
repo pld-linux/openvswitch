@@ -17,6 +17,5 @@
 #     concurrent VM import operations.
 # VSWITCHD_MLOCKALL=yes
 
-# Other openvswitch options, --brcompat will enable bridge compatibility mode,
-# --ovs-brcompatd-priority is "nice" priority at which to run brcompatd
-# OPENVSWITCH_OPTIONS="--brcompat --ovs-brcompatd-priority=-10"
+# Other openvswitch options
+# OPENVSWITCH_OPTIONS=""

@@ -8,7 +8,7 @@
 ### BEGIN INIT INFO
 # Provides:          openvswitch-switch
 # Required-Start:    $syslog
-# Required-Stop:     
+# Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Open vSwitch switch
@@ -25,7 +25,6 @@
 FORCE_COREFILES="yes"
 OVSDB_SERVER_PRIORITY="-10"
 VSWITCHD_PRIORITY="-10"
-BRCOMPATD_PRIORITY="-10"
 VSWITCHD_MLOCKALL="yes"
 [ -f /etc/sysconfig/openvswitch ] && . /etc/sysconfig/openvswitch
 

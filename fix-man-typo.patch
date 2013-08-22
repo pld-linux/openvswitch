@@ -1,0 +1,11 @@
+--- openvswitch-1.10.0/utilities/ovs-controller.8.in~	2013-04-09 23:06:04.000000000 +0200
++++ openvswitch-1.10.0/utilities/ovs-controller.8.in	2013-08-22 20:14:21.272439899 +0200
+@@ -140,7 +140,7 @@
+ .so lib/vlog.man
+ .so lib/unixctl.man
+ .so lib/common.man
+-.so so lib/ofp-version.man
++.so lib/ofp-version.man
+ .
+ .SH EXAMPLES
+ .PP

@@ -8,7 +8,6 @@ Type=forking
 Environment=FORCE_COREFILES=yes
 Environment=OVSDB_SERVER_PRIORITY=-10
 Environment=VSWITCHD_PRIORITY=-10
-Environment=BRCOMPATD_PRIORITY=-10
 Environment=VSWITCHD_MLOCKALL=yes
 EnvironmentFile=-/etc/sysconfig/openvswitch
 ExecStart=/usr/share/openvswitch/scripts/ovs-ctl start --system-id=random --force-corefiles=${FORCE_COREFILES} --ovsdb-server-priority=${OVSDB_SERVER_PRIORITY} --ovs-vswitchd-priority=${VSWITCHD_PRIORITY} --mlockall=${VSWITCHD_MLOCKALL} $OPENVSWITCH_OPTIONS
