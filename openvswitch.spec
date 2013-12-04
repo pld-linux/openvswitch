@@ -23,17 +23,17 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	3.1
+%define		rel	1
 %define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
 Name:		%{pname}%{_alt_kernel}
-Version:	1.10.0
+Version:	2.0.0
 Release:	%{rel}
 License:	Apache v2.0
 Group:		Networking/Daemons
 Source0:	http://openvswitch.org/releases/%{pname}-%{version}.tar.gz
-# Source0-md5:	fe8b49efe9f86b57abab00166b971106
+# Source0-md5:	7d7a58350e634e515e0fe43c64d64f44
 Source1:	ifdown-ovs
 Source2:	ifup-ovs
 Source3:	README.PLD
@@ -63,7 +63,7 @@ BuildRequires:	python-distribute
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.647
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.32}
 %else
 Requires:	uname(release) >= 3.3
 %endif
@@ -244,10 +244,10 @@ fi
 %attr(755,root,root) %{_bindir}/ovs-benchmark
 %attr(755,root,root) %{_bindir}/ovs-controller
 %attr(755,root,root) %{_bindir}/ovs-dpctl
+%attr(755,root,root) %{_bindir}/ovs-dpctl-top
 %attr(755,root,root) %{_bindir}/ovs-l3ping
 %attr(755,root,root) %{_bindir}/ovs-ofctl
 %attr(755,root,root) %{_bindir}/ovs-parse-backtrace
-%attr(755,root,root) %{_bindir}/ovs-parse-leaks
 %attr(755,root,root) %{_bindir}/ovs-pcap
 %attr(755,root,root) %{_bindir}/ovs-pki
 %attr(755,root,root) %{_bindir}/ovs-tcpundump
@@ -270,10 +270,10 @@ fi
 %{_mandir}/man8/ovs-controller.8*
 %{_mandir}/man8/ovs-ctl.8*
 %{_mandir}/man8/ovs-dpctl.8*
+%{_mandir}/man8/ovs-dpctl-top.8*
 %{_mandir}/man8/ovs-l3ping.8*
 %{_mandir}/man8/ovs-ofctl.8*
 %{_mandir}/man8/ovs-parse-backtrace.8*
-%{_mandir}/man8/ovs-parse-leaks.8*
 %{_mandir}/man8/ovs-pki.8*
 %{_mandir}/man8/ovs-vlan-bug-workaround.8*
 %{_mandir}/man8/ovs-vlan-test.8*
