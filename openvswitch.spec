@@ -46,6 +46,7 @@ Source7:	%{pname}.init
 Source10:	%{pname}.service
 Source11:	ovsdbmonitor.desktop
 Patch0:		fix-man-typo.patch
+Patch1:		disable-atomic-test.patch
 URL:		http://openvswitch.org/
 BuildRequires:	Zope-Interface
 BuildRequires:	automake
@@ -145,6 +146,9 @@ Ten pakiet zawiera moduł jądra Linuksa.
 %prep
 %setup -q -n %{pname}-%{version}
 %patch0 -p1
+%ifarch i486
+%patch1 -p1
+%endif
 cp %{SOURCE3} .
 
 %build
