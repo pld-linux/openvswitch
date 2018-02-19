@@ -102,7 +102,7 @@
 
 #
 # Conditional build:
-%bcond_without	kernel		# don't build kernel module for flow-based switching for kernels < 4.11
+%bcond_with	kernel		# build kernel module for flow-based switching for kernels < 4.11
 %bcond_without	userspace	# don't build userspace programs
 %bcond_with	verbose		# verbose build (V=1)
 
