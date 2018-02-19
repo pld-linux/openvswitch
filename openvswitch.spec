@@ -102,24 +102,15 @@
 
 #
 # Conditional build:
-%bcond_without	dist_kernel	# allow non-distribution kernel
-%bcond_without	kernel		# don't build kernel modules
+%bcond_without	kernel		# don't build kernel module for flow-based switching for kernels < 4.11
 %bcond_without	userspace	# don't build userspace programs
 %bcond_with	verbose		# verbose build (V=1)
 
-# set kernel_builtin to true for kernels with openvswitch module (>= 3.3)
-%define		kernel_builtin	%(echo %{_kernel_ver} | awk '{ split($0, v, "."); vv=v[1]*1000+v[2]; if (vv >= 3003) print 1; else print 0 }')
-#'
-%if %{kernel_builtin} == 1
-%undefine	with_kernel
+%if 0%{?_pld_builder:1} && %{with kernel} && %{with userspace}
+%{error:kernel and userspace cannot be built at the same time on PLD builders}
+exit 1
 %endif
 
-%if %{without kernel}
-%undefine	with_dist_kernel
-%endif
-%if "%{_alt_kernel}" != "%{nil}"
-%undefine	with_userspace
-%endif
 %if %{without userspace}
 # nothing to be placed to debuginfo package
 %define		_enable_debug_packages	0
@@ -129,9 +120,9 @@
 %define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
-Name:		%{pname}%{_alt_kernel}
+Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
 Version:	2.8.1
-Release:	%{rel}
+Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	Apache v2.0
 Group:		Networking/Daemons
 Source0:	http://openvswitch.org/releases/%{pname}-%{version}.tar.gz
@@ -161,11 +152,11 @@ BuildRequires:	python-TwistedConch
 BuildRequires:	python-TwistedCore
 BuildRequires:	python-distribute
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.647
+BuildRequires:	rpmbuild(macros) >= 1.701
 %if %{with kernel}
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.32}
+%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:3.11}
 %else
-Requires:	uname(release) >= 3.3
+Requires:	uname(release) >= 3.11
 %endif
 Requires(post,preun):	/sbin/chkconfig
 Requires(post,preun,postun):	systemd-units >= 38
@@ -203,39 +194,65 @@ Requires:	python-openvswitch = %{version}-%{release}
 This package contains utilities that are useful to diagnose
 performance and connectivity issues in Open vSwitch setup.
 
-%package -n kernel%{_alt_kernel}-net-openvswitch
-Summary:	Linux driver for openvswitch
-Summary(pl.UTF-8):	Sterownik dla Linuksa do openvswitch
-Release:	%{rel}@%{_kernel_ver_str}
-Group:		Base/Kernel
-Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel
-Requires(postun):	%releq_kernel
-%endif
+%define	kernel_pkg()\
+%package -n kernel%{_alt_kernel}-net-openvswitch\
+Summary:	Linux driver for openvswitch\
+Summary(pl.UTF-8):	Sterownik dla Linuksa do openvswitch\
+Release:	%{rel}@%{_kernel_ver_str}\
+Group:		Base/Kernel\
+Requires(post,postun):	/sbin/depmod\
+%requires_releq_kernel\
+Requires(postun):	%releq_kernel\
+\
+%description -n kernel%{_alt_kernel}-net-openvswitch\
+This is driver for openvswitch for Linux.\
+\
+This package contains Linux module.\
+\
+%description -n kernel%{_alt_kernel}-net-openvswitch -l pl.UTF-8\
+Sterownik dla Linuksa do openvswitch.\
+\
+Ten pakiet zawiera moduł jądra Linuksa.\
+\
+%if %{with kernel}\
+%files -n kernel%{_alt_kernel}-net-openvswitch\
+%defattr(644,root,root,755)\
+/etc/modprobe.d/%{_kernel_ver}/openvswitch.conf\
+%dir /lib/modules/%{_kernel_ver}/kernel/net/openvswitch\
+/lib/modules/%{_kernel_ver}/kernel/net/openvswitch/*.ko*\
+%endif\
+\
+%post	-n kernel%{_alt_kernel}-net-openvswitch\
+%depmod %{_kernel_ver}\
+\
+%postun	-n kernel%{_alt_kernel}-net-openvswitch\
+%depmod %{_kernel_ver}\
+%{nil}
 
-%description -n kernel%{_alt_kernel}-net-openvswitch
-This is driver for openvswitch for Linux.
+%define build_kernel_pkg()\
+%configure \\\
+	--with-linux=%{_kernelsrcdir} \\\
+	--with-linux-source=%{_kernelsrcdir}\
+\
+%{__make} clean\
+%{__make} -C datapath/linux %{?with_verbose:V=1}\
+%install_kernel_modules -D installed -s %{version} -n openvswitch -m datapath/linux/openvswitch,datapath/linux/vport-geneve,datapath/linux/vport-gre,datapath/linux/vport-lisp,datapath/linux/vport-stt,datapath/linux/vport-vxlan -d kernel/net/openvswitch\
+%{nil}
 
-This package contains Linux module.
-
-%description -n kernel%{_alt_kernel}-net-openvswitch -l pl.UTF-8
-Sterownik dla Linuksa do openvswitch.
-
-Ten pakiet zawiera moduł jądra Linuksa.
+%{?with_kernel:%{expand:%create_kernel_packages}}
 
 %prep
 %setup -q -n %{pname}-%{version}
 cp %{SOURCE3} .
 
 %build
-%configure \
-%if %{with kernel}
-	--with-linux=%{_kernelsrcdir} \
-	--with-linux-source=%{_kernelsrcdir}
-%endif
+%{?with_kernel:%{expand:%build_kernel_packages}}
 
+%if %{with userspace}
+%configure
+%{__make} clean
 %{__make}
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -243,7 +260,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 install -d $RPM_BUILD_ROOT{%{py_sitescriptdir},%{systemdunitdir},%{systemdtmpfilesdir}} \
 	$RPM_BUILD_ROOT{/etc/{sysconfig,rc.d/init.d,logrotate.d},/lib/rc-scripts} \
-	$RPM_BUILD_ROOT{%{_desktopdir},%{_datadir}/%{pname}/pki}
+	$RPM_BUILD_ROOT%{_datadir}/%{pname}/pki
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -255,7 +272,6 @@ install -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/openvswitch.conf
 install -p %{SOURCE6} $RPM_BUILD_ROOT/etc/sysconfig/openvswitch
 install -p %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/openvswitch
 install -p %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}/openvswitch.service
-install -p %{SOURCE11} $RPM_BUILD_ROOT%{_desktopdir}
 
 %{__mv} $RPM_BUILD_ROOT%{_datadir}/%{pname}/python/{ovs,ovstest} $RPM_BUILD_ROOT%{py_sitescriptdir}
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/%{pname}/python
@@ -268,8 +284,7 @@ install -p %{SOURCE11} $RPM_BUILD_ROOT%{_desktopdir}
 %endif
 
 %if %{with kernel}
-cd datapath/linux
-%install_kernel_modules -m openvswitch -d kernel/net/openvswitch
+cp -a installed/* $RPM_BUILD_ROOT
 %endif
 
 %clean
@@ -290,12 +305,6 @@ fi
 
 %postun
 %systemd_reload
-
-%post	-n kernel%{_alt_kernel}-net-openvswitch
-%depmod %{_kernel_ver}
-
-%postun	-n kernel%{_alt_kernel}-net-openvswitch
-%depmod %{_kernel_ver}
 
 %if %{with userspace}
 %files
@@ -368,11 +377,4 @@ fi
 %attr(755,root,root) %{_bindir}/ovs-vlan-test
 %{py_sitescriptdir}/ovstest
 %{_mandir}/man8/ovs-test.8*
-%endif
-
-%if %{with kernel}
-%files -n kernel%{_alt_kernel}-net-openvswitch
-%defattr(644,root,root,755)
-%dir /lib/modules/%{_kernel_ver}/kernel/net/openvswitch
-/lib/modules/%{_kernel_ver}/kernel/net/openvswitch/*.ko*
 %endif
