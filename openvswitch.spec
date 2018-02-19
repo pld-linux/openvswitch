@@ -1,3 +1,105 @@
+# TODO:
+# - verify all init scripts still work
+#
+# warning: Installed (but unpackaged) file(s) found:
+#	/etc/bash_completion.d/ovs-appctl-bashcomp.bash
+#	/etc/bash_completion.d/ovs-vsctl-bashcomp.bash
+#	/usr/bin/ovn-controller
+#	/usr/bin/ovn-controller-vtep
+#	/usr/bin/ovn-detrace
+#	/usr/bin/ovn-docker-overlay-driver
+#	/usr/bin/ovn-docker-underlay-driver
+#	/usr/bin/ovn-nbctl
+#	/usr/bin/ovn-northd
+#	/usr/bin/ovn-sbctl
+#	/usr/bin/ovn-trace
+#	/usr/bin/ovs-docker
+#	/usr/bin/ovs-tcpdump
+#	/usr/bin/ovs-testcontroller
+#	/usr/bin/vtep-ctl
+#	/usr/include/openflow/intel-ext.h
+#	/usr/include/openflow/netronome-ext.h
+#	/usr/include/openflow/nicira-ext.h
+#	/usr/include/openflow/openflow-1.0.h
+#	/usr/include/openflow/openflow-1.1.h
+#	/usr/include/openflow/openflow-1.2.h
+#	/usr/include/openflow/openflow-1.3.h
+#	/usr/include/openflow/openflow-1.4.h
+#	/usr/include/openflow/openflow-1.5.h
+#	/usr/include/openflow/openflow-1.6.h
+#	/usr/include/openflow/openflow-common.h
+#	/usr/include/openflow/openflow.h
+#	/usr/include/openvswitch/compiler.h
+#	/usr/include/openvswitch/dynamic-string.h
+#	/usr/include/openvswitch/flow.h
+#	/usr/include/openvswitch/geneve.h
+#	/usr/include/openvswitch/hmap.h
+#	/usr/include/openvswitch/json.h
+#	/usr/include/openvswitch/list.h
+#	/usr/include/openvswitch/match.h
+#	/usr/include/openvswitch/meta-flow.h
+#	/usr/include/openvswitch/netdev.h
+#	/usr/include/openvswitch/nsh.h
+#	/usr/include/openvswitch/ofp-actions.h
+#	/usr/include/openvswitch/ofp-ed-props.h
+#	/usr/include/openvswitch/ofp-errors.h
+#	/usr/include/openvswitch/ofp-msgs.h
+#	/usr/include/openvswitch/ofp-parse.h
+#	/usr/include/openvswitch/ofp-print.h
+#	/usr/include/openvswitch/ofp-prop.h
+#	/usr/include/openvswitch/ofp-util.h
+#	/usr/include/openvswitch/ofpbuf.h
+#	/usr/include/openvswitch/packets.h
+#	/usr/include/openvswitch/shash.h
+#	/usr/include/openvswitch/thread.h
+#	/usr/include/openvswitch/token-bucket.h
+#	/usr/include/openvswitch/tun-metadata.h
+#	/usr/include/openvswitch/type-props.h
+#	/usr/include/openvswitch/types.h
+#	/usr/include/openvswitch/util.h
+#	/usr/include/openvswitch/uuid.h
+#	/usr/include/openvswitch/vconn.h
+#	/usr/include/openvswitch/version.h
+#	/usr/include/openvswitch/vlog.h
+#	/usr/include/ovn/actions.h
+#	/usr/include/ovn/expr.h
+#	/usr/include/ovn/lex.h
+#	/usr/lib64/libofproto.a
+#	/usr/lib64/libofproto.la
+#	/usr/lib64/libopenvswitch.a
+#	/usr/lib64/libopenvswitch.la
+#	/usr/lib64/libovn.a
+#	/usr/lib64/libovn.la
+#	/usr/lib64/libovsdb.a
+#	/usr/lib64/libovsdb.la
+#	/usr/lib64/libsflow.a
+#	/usr/lib64/libsflow.la
+#	/usr/lib64/libvtep.a
+#	/usr/lib64/libvtep.la
+#	/usr/lib64/pkgconfig/libofproto.pc
+#	/usr/lib64/pkgconfig/libopenvswitch.pc
+#	/usr/lib64/pkgconfig/libovsdb.pc
+#	/usr/lib64/pkgconfig/libsflow.pc
+#	/usr/share/man/man1/ovn-detrace.1.gz
+#	/usr/share/man/man5/ovn-nb.5.gz
+#	/usr/share/man/man5/ovn-sb.5.gz
+#	/usr/share/man/man5/vtep.5.gz
+#	/usr/share/man/man7/ovn-architecture.7.gz
+#	/usr/share/man/man7/ovs-fields.7.gz
+#	/usr/share/man/man8/ovn-controller-vtep.8.gz
+#	/usr/share/man/man8/ovn-controller.8.gz
+#	/usr/share/man/man8/ovn-ctl.8.gz
+#	/usr/share/man/man8/ovn-nbctl.8.gz
+#	/usr/share/man/man8/ovn-northd.8.gz
+#	/usr/share/man/man8/ovn-sbctl.8.gz
+#	/usr/share/man/man8/ovn-trace.8.gz
+#	/usr/share/man/man8/ovs-tcpdump.8.gz
+#	/usr/share/man/man8/ovs-testcontroller.8.gz
+#	/usr/share/man/man8/vtep-ctl.8.gz
+#	/usr/share/openvswitch/ovn-nb.ovsschema
+#	/usr/share/openvswitch/ovn-sb.ovsschema
+#	/usr/share/openvswitch/vtep.ovsschema
+
 #
 # Conditional build:
 %bcond_without	dist_kernel	# allow non-distribution kernel
@@ -23,17 +125,17 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	3
+%define		rel	0.1
 %define		pname	openvswitch
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
 Name:		%{pname}%{_alt_kernel}
-Version:	2.0.0
+Version:	2.8.1
 Release:	%{rel}
 License:	Apache v2.0
 Group:		Networking/Daemons
 Source0:	http://openvswitch.org/releases/%{pname}-%{version}.tar.gz
-# Source0-md5:	7d7a58350e634e515e0fe43c64d64f44
+# Source0-md5:	837e291cfd60af0fc455e77deb2e1172
 Source1:	ifdown-ovs
 Source2:	ifup-ovs
 Source3:	README.PLD
@@ -44,9 +146,6 @@ Source7:	%{pname}.init
 #Source8:	openvswitch-controller.init
 #Source9:	openvswitch-ipsec.init
 Source10:	%{pname}.service
-Source11:	ovsdbmonitor.desktop
-Patch0:		fix-man-typo.patch
-Patch1:		disable-atomic-test.patch
 URL:		http://openvswitch.org/
 BuildRequires:	Zope-Interface
 BuildRequires:	automake
@@ -56,7 +155,7 @@ BuildRequires:	groff
 BuildRequires:	openssl-devel
 BuildRequires:	openssl-tools
 BuildRequires:	pkgconfig
-BuildRequires:	python-PyQt4-devel
+BuildRequires:	sip-PyQt4
 BuildRequires:	python-PyQt4-devel-tools
 BuildRequires:	python-TwistedConch
 BuildRequires:	python-TwistedCore
@@ -73,6 +172,7 @@ Requires(post,preun,postun):	systemd-units >= 38
 Requires:	python-modules
 Requires:	rc-scripts
 Requires:	systemd-units >= 38
+Obsoletes:	ovsdbmonitor < 2.3.0-1
 BuildRoot:	%{tmpdir}/%{pname}-%{version}-root-%(id -u -n)
 
 %description
@@ -85,8 +185,6 @@ it is designed to support distribution across multiple physical
 servers similar to VMware's vNetwork distributed vswitch or Cisco's
 Nexus 1000V.
 
-#%description -l pl.UTF-8
-
 %package -n python-openvswitch
 Summary:	Open vSwitch python bindings
 Group:		Development/Languages/Python
@@ -94,23 +192,6 @@ Requires:	python-modules
 
 %description -n python-openvswitch
 Python bindings for the Open vSwitch database
-
-%package -n ovsdbmonitor
-Summary:	Open vSwitch graphical monitoring tool
-Group:		Networking/Admin
-Requires:	Zope-Interface
-Requires:	python-PyQt4-devel-tools
-Requires:	python-TwistedConch
-Requires:	python-TwistedCore
-Requires:	python-modules
-Requires:	python-openvswitch = %{version}-%{release}
-
-%description -n ovsdbmonitor
-A GUI tool for monitoring and troubleshooting local or remote Open
-vSwitch installations. It presents GUI tables that graphically
-represent an Open vSwitch kernel flow table (similar to "ovs-dpctl
-dump-flows") and Open vSwitch database contents (similar to "ovs-vsctl
-list <table>").
 
 %package test
 Summary:	Open vSwitch test package
@@ -145,16 +226,9 @@ Ten pakiet zawiera moduł jądra Linuksa.
 
 %prep
 %setup -q -n %{pname}-%{version}
-%patch0 -p1
-%ifarch i486
-%patch1 -p1
-%endif
 cp %{SOURCE3} .
 
 %build
-%{__aclocal} -I m4
-%{__automake}
-%{__autoconf}
 %configure \
 %if %{with kernel}
 	--with-linux=%{_kernelsrcdir} \
@@ -226,9 +300,8 @@ fi
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc INSTALL INSTALL.KVM INSTALL.SSL INSTALL.Libvirt INSTALL.XenServer INSTALL.userspace
-%doc AUTHORS DESIGN NEWS README IntegrationGuide OPENFLOW-1.1+
-%doc REPORTING-BUGS WHY-OVS README.PLD FAQ
+%doc AUTHORS.rst CONTRIBUTING.rst MAINTAINERS.rst NEWS NOTICE README.rst
+%doc README.PLD
 %attr(755,root,root) /lib/rc-scripts/ifdown-ovs
 %attr(755,root,root) /lib/rc-scripts/ifup-ovs
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/openvswitch
@@ -245,8 +318,6 @@ fi
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/openvswitch
 
 %attr(755,root,root) %{_bindir}/ovs-appctl
-%attr(755,root,root) %{_bindir}/ovs-benchmark
-%attr(755,root,root) %{_bindir}/ovs-controller
 %attr(755,root,root) %{_bindir}/ovs-dpctl
 %attr(755,root,root) %{_bindir}/ovs-dpctl-top
 %attr(755,root,root) %{_bindir}/ovs-l3ping
@@ -262,7 +333,6 @@ fi
 %attr(755,root,root) %{_sbindir}/ovs-vlan-bug-workaround
 %attr(755,root,root) %{_sbindir}/ovs-vswitchd
 %attr(755,root,root) %{_sbindir}/ovsdb-server
-%{_mandir}/man1/ovs-benchmark.1*
 %{_mandir}/man1/ovs-pcap.1*
 %{_mandir}/man1/ovs-tcpundump.1*
 %{_mandir}/man1/ovsdb-client.1*
@@ -271,7 +341,6 @@ fi
 %{_mandir}/man5/ovs-vswitchd.conf.db.5*
 %{_mandir}/man8/ovs-appctl.8*
 %{_mandir}/man8/ovs-bugtool.8*
-%{_mandir}/man8/ovs-controller.8*
 %{_mandir}/man8/ovs-ctl.8*
 %{_mandir}/man8/ovs-dpctl.8*
 %{_mandir}/man8/ovs-dpctl-top.8*
@@ -292,13 +361,6 @@ fi
 %{py_sitescriptdir}/ovs/db/*.py*
 %dir %{py_sitescriptdir}/ovs/unixctl
 %{py_sitescriptdir}/ovs/unixctl/*.py*
-
-%files -n ovsdbmonitor
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/ovsdbmonitor
-%{_datadir}/ovsdbmonitor
-%{_desktopdir}/ovsdbmonitor.desktop
-%{_mandir}/man1/ovsdbmonitor.1*
 
 %files test
 %defattr(644,root,root,755)
