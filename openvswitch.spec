@@ -17,69 +17,6 @@
 #	/usr/bin/ovs-tcpdump
 #	/usr/bin/ovs-testcontroller
 #	/usr/bin/vtep-ctl
-#	/usr/include/openflow/intel-ext.h
-#	/usr/include/openflow/netronome-ext.h
-#	/usr/include/openflow/nicira-ext.h
-#	/usr/include/openflow/openflow-1.0.h
-#	/usr/include/openflow/openflow-1.1.h
-#	/usr/include/openflow/openflow-1.2.h
-#	/usr/include/openflow/openflow-1.3.h
-#	/usr/include/openflow/openflow-1.4.h
-#	/usr/include/openflow/openflow-1.5.h
-#	/usr/include/openflow/openflow-1.6.h
-#	/usr/include/openflow/openflow-common.h
-#	/usr/include/openflow/openflow.h
-#	/usr/include/openvswitch/compiler.h
-#	/usr/include/openvswitch/dynamic-string.h
-#	/usr/include/openvswitch/flow.h
-#	/usr/include/openvswitch/geneve.h
-#	/usr/include/openvswitch/hmap.h
-#	/usr/include/openvswitch/json.h
-#	/usr/include/openvswitch/list.h
-#	/usr/include/openvswitch/match.h
-#	/usr/include/openvswitch/meta-flow.h
-#	/usr/include/openvswitch/netdev.h
-#	/usr/include/openvswitch/nsh.h
-#	/usr/include/openvswitch/ofp-actions.h
-#	/usr/include/openvswitch/ofp-ed-props.h
-#	/usr/include/openvswitch/ofp-errors.h
-#	/usr/include/openvswitch/ofp-msgs.h
-#	/usr/include/openvswitch/ofp-parse.h
-#	/usr/include/openvswitch/ofp-print.h
-#	/usr/include/openvswitch/ofp-prop.h
-#	/usr/include/openvswitch/ofp-util.h
-#	/usr/include/openvswitch/ofpbuf.h
-#	/usr/include/openvswitch/packets.h
-#	/usr/include/openvswitch/shash.h
-#	/usr/include/openvswitch/thread.h
-#	/usr/include/openvswitch/token-bucket.h
-#	/usr/include/openvswitch/tun-metadata.h
-#	/usr/include/openvswitch/type-props.h
-#	/usr/include/openvswitch/types.h
-#	/usr/include/openvswitch/util.h
-#	/usr/include/openvswitch/uuid.h
-#	/usr/include/openvswitch/vconn.h
-#	/usr/include/openvswitch/version.h
-#	/usr/include/openvswitch/vlog.h
-#	/usr/include/ovn/actions.h
-#	/usr/include/ovn/expr.h
-#	/usr/include/ovn/lex.h
-#	/usr/lib64/libofproto.a
-#	/usr/lib64/libofproto.la
-#	/usr/lib64/libopenvswitch.a
-#	/usr/lib64/libopenvswitch.la
-#	/usr/lib64/libovn.a
-#	/usr/lib64/libovn.la
-#	/usr/lib64/libovsdb.a
-#	/usr/lib64/libovsdb.la
-#	/usr/lib64/libsflow.a
-#	/usr/lib64/libsflow.la
-#	/usr/lib64/libvtep.a
-#	/usr/lib64/libvtep.la
-#	/usr/lib64/pkgconfig/libofproto.pc
-#	/usr/lib64/pkgconfig/libopenvswitch.pc
-#	/usr/lib64/pkgconfig/libovsdb.pc
-#	/usr/lib64/pkgconfig/libsflow.pc
 #	/usr/share/man/man1/ovn-detrace.1.gz
 #	/usr/share/man/man5/ovn-nb.5.gz
 #	/usr/share/man/man5/ovn-sb.5.gz
@@ -139,20 +76,20 @@ Source7:	%{pname}.init
 Source10:	%{pname}.service
 URL:		http://openvswitch.org/
 BuildRequires:	Zope-Interface
-BuildRequires:	automake
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	graphviz
 BuildRequires:	groff
 BuildRequires:	openssl-devel
 BuildRequires:	openssl-tools
 BuildRequires:	pkgconfig
-BuildRequires:	sip-PyQt4
 BuildRequires:	python-PyQt4-devel-tools
 BuildRequires:	python-TwistedConch
 BuildRequires:	python-TwistedCore
 BuildRequires:	python-distribute
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.701
+BuildRequires:	sip-PyQt4
 %if %{with kernel}
 %{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:3.11}
 %else
@@ -175,6 +112,13 @@ while still supporting standard management interfaces and protocols
 it is designed to support distribution across multiple physical
 servers similar to VMware's vNetwork distributed vswitch or Cisco's
 Nexus 1000V.
+
+%package devel
+Summary:	Header files and development libraries for openvswitch
+Group:		Development/Libraries
+
+%description devel
+Header files and development libraries for openvswitch.
 
 %package -n python-openvswitch
 Summary:	Open vSwitch python bindings
@@ -276,6 +220,8 @@ install -p %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}/openvswitch.service
 %{__mv} $RPM_BUILD_ROOT%{_datadir}/%{pname}/python/{ovs,ovstest} $RPM_BUILD_ROOT%{py_sitescriptdir}
 %{__rm} -r $RPM_BUILD_ROOT%{_datadir}/%{pname}/python
 
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
+
 %py_ocomp $RPM_BUILD_ROOT%{py_sitescriptdir}
 %py_comp $RPM_BUILD_ROOT%{py_sitescriptdir}
 
@@ -361,6 +307,22 @@ fi
 %{_mandir}/man8/ovs-vlan-test.8*
 %{_mandir}/man8/ovs-vsctl.8*
 %{_mandir}/man8/ovs-vswitchd.8*
+
+%files devel
+%defattr(644,root,root,755)
+%{_includedir}/openflow
+%{_includedir}/openvswitch
+%{_includedir}/ovn
+%{_libdir}/libofproto.a
+%{_libdir}/libopenvswitch.a
+%{_libdir}/libovn.a
+%{_libdir}/libovsdb.a
+%{_libdir}/libsflow.a
+%{_libdir}/libvtep.a
+%{_pkgconfigdir}/libofproto.pc
+%{_pkgconfigdir}/libopenvswitch.pc
+%{_pkgconfigdir}/libovsdb.pc
+%{_pkgconfigdir}/libsflow.pc
 
 %files -n python-openvswitch
 %defattr(644,root,root,755)
