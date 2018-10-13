@@ -58,12 +58,12 @@ exit 1
 Summary:	Production Quality, Multilayer Open Virtual Switch
 #Summary(pl.UTF-8):	-
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	2.8.1
+Version:	2.10.0
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	Apache v2.0
 Group:		Networking/Daemons
 Source0:	http://openvswitch.org/releases/%{pname}-%{version}.tar.gz
-# Source0-md5:	837e291cfd60af0fc455e77deb2e1172
+# Source0-md5:	33a55c9bac1fcaa8842f84a175e50800
 Source1:	ifdown-ovs
 Source2:	ifup-ovs
 Source3:	README.PLD
