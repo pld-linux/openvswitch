@@ -268,11 +268,24 @@ fi
 %attr(755,root,root) %{_datadir}/%{pname}/scripts/*
 %{_datadir}/%{pname}/bugtool-plugins
 %{_datadir}/%{pname}/vswitch.ovsschema
+%{_datadir}/%{pname}/ovn-nb.ovsschema
+%{_datadir}/%{pname}/ovn-sb.ovsschema
+%{_datadir}/%{pname}/vtep.ovsschema
 
 %attr(754,root,root) /etc/rc.d/init.d/openvswitch
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/openvswitch
 
+%attr(755,root,root) %{_bindir}/ovn-controller
+%attr(755,root,root) %{_bindir}/ovn-controller-vtep
+%attr(755,root,root) %{_bindir}/ovn-detrace
+%attr(755,root,root) %{_bindir}/ovn-docker-overlay-driver
+%attr(755,root,root) %{_bindir}/ovn-docker-underlay-driver
+%attr(755,root,root) %{_bindir}/ovn-nbctl
+%attr(755,root,root) %{_bindir}/ovn-northd
+%attr(755,root,root) %{_bindir}/ovn-sbctl
+%attr(755,root,root) %{_bindir}/ovn-trace
 %attr(755,root,root) %{_bindir}/ovs-appctl
+%attr(755,root,root) %{_bindir}/ovs-docker
 %attr(755,root,root) %{_bindir}/ovs-dpctl
 %attr(755,root,root) %{_bindir}/ovs-dpctl-top
 %attr(755,root,root) %{_bindir}/ovs-l3ping
@@ -281,19 +294,42 @@ fi
 %attr(755,root,root) %{_bindir}/ovs-pcap
 %attr(755,root,root) %{_bindir}/ovs-pki
 %attr(755,root,root) %{_bindir}/ovs-tcpundump
+%attr(755,root,root) %{_bindir}/ovs-tcpdump
 %attr(755,root,root) %{_bindir}/ovs-vsctl
 %attr(755,root,root) %{_bindir}/ovsdb-client
 %attr(755,root,root) %{_bindir}/ovsdb-tool
+%attr(755,root,root) %{_bindir}/vtep-ctl
 %attr(755,root,root) %{_sbindir}/ovs-bugtool
 %attr(755,root,root) %{_sbindir}/ovs-vlan-bug-workaround
 %attr(755,root,root) %{_sbindir}/ovs-vswitchd
 %attr(755,root,root) %{_sbindir}/ovsdb-server
+%{_mandir}/man1/ovn-detrace.1*
 %{_mandir}/man1/ovs-pcap.1*
 %{_mandir}/man1/ovs-tcpundump.1*
 %{_mandir}/man1/ovsdb-client.1*
 %{_mandir}/man1/ovsdb-server.1*
 %{_mandir}/man1/ovsdb-tool.1*
+%{_mandir}/man5/ovn-nb.5*
+%{_mandir}/man5/ovn-sb.5*
 %{_mandir}/man5/ovs-vswitchd.conf.db.5*
+%{_mandir}/man5/ovsdb-server.5*
+%{_mandir}/man5/ovsdb.5*
+%{_mandir}/man5/vtep.5*
+%{_mandir}/man7/ovn-architecture.7*
+%{_mandir}/man7/ovs-fields.7*
+%{_mandir}/man7/ovsdb-server.7*
+%{_mandir}/man7/ovsdb.7*
+%{_mandir}/man8/ovn-controller-vtep.8*
+%{_mandir}/man8/ovn-controller.8*
+%{_mandir}/man8/ovn-ctl.8*
+%{_mandir}/man8/ovn-nbctl.8*
+%{_mandir}/man8/ovn-northd.8*
+%{_mandir}/man8/ovn-sbctl.8*
+%{_mandir}/man8/ovn-trace.8*
+%{_mandir}/man8/vtep-ctl.8*
+%{_mandir}/man8/ovs-kmod-ctl.8*
+%{_mandir}/man8/ovs-tcpdump.8*
+%{_mandir}/man8/ovs-testcontroller.8*
 %{_mandir}/man8/ovs-appctl.8*
 %{_mandir}/man8/ovs-bugtool.8*
 %{_mandir}/man8/ovs-ctl.8*
@@ -336,6 +372,7 @@ fi
 %files test
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/ovs-test
+%attr(755,root,root) %{_bindir}/ovs-testcontroller
 %attr(755,root,root) %{_bindir}/ovs-vlan-test
 %{py_sitescriptdir}/ovstest
 %{_mandir}/man8/ovs-test.8*
