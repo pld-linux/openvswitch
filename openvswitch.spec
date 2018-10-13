@@ -227,6 +227,8 @@ install -p %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}/openvswitch.service
 
 %py_ocomp $RPM_BUILD_ROOT%{_datadir}/ovsdbmonitor
 %py_comp $RPM_BUILD_ROOT%{_datadir}/ovsdbmonitor
+
+%py_postclean
 %endif
 
 %if %{with kernel}
@@ -364,6 +366,10 @@ fi
 %defattr(644,root,root,755)
 %dir %{py_sitescriptdir}/ovs
 %{py_sitescriptdir}/ovs/*.py*
+%dir %{py_sitescriptdir}/ovs/compat
+%{py_sitescriptdir}/ovs/compat/*.py*
+%dir %{py_sitescriptdir}/ovs/compat/sortedcontainers
+%{py_sitescriptdir}/ovs/compat/sortedcontainers/*.py*
 %dir %{py_sitescriptdir}/ovs/db
 %{py_sitescriptdir}/ovs/db/*.py*
 %dir %{py_sitescriptdir}/ovs/unixctl
