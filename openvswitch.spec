@@ -4,38 +4,6 @@
 # warning: Installed (but unpackaged) file(s) found:
 #	/etc/bash_completion.d/ovs-appctl-bashcomp.bash
 #	/etc/bash_completion.d/ovs-vsctl-bashcomp.bash
-#	/usr/bin/ovn-controller
-#	/usr/bin/ovn-controller-vtep
-#	/usr/bin/ovn-detrace
-#	/usr/bin/ovn-docker-overlay-driver
-#	/usr/bin/ovn-docker-underlay-driver
-#	/usr/bin/ovn-nbctl
-#	/usr/bin/ovn-northd
-#	/usr/bin/ovn-sbctl
-#	/usr/bin/ovn-trace
-#	/usr/bin/ovs-docker
-#	/usr/bin/ovs-tcpdump
-#	/usr/bin/ovs-testcontroller
-#	/usr/bin/vtep-ctl
-#	/usr/share/man/man1/ovn-detrace.1.gz
-#	/usr/share/man/man5/ovn-nb.5.gz
-#	/usr/share/man/man5/ovn-sb.5.gz
-#	/usr/share/man/man5/vtep.5.gz
-#	/usr/share/man/man7/ovn-architecture.7.gz
-#	/usr/share/man/man7/ovs-fields.7.gz
-#	/usr/share/man/man8/ovn-controller-vtep.8.gz
-#	/usr/share/man/man8/ovn-controller.8.gz
-#	/usr/share/man/man8/ovn-ctl.8.gz
-#	/usr/share/man/man8/ovn-nbctl.8.gz
-#	/usr/share/man/man8/ovn-northd.8.gz
-#	/usr/share/man/man8/ovn-sbctl.8.gz
-#	/usr/share/man/man8/ovn-trace.8.gz
-#	/usr/share/man/man8/ovs-tcpdump.8.gz
-#	/usr/share/man/man8/ovs-testcontroller.8.gz
-#	/usr/share/man/man8/vtep-ctl.8.gz
-#	/usr/share/openvswitch/ovn-nb.ovsschema
-#	/usr/share/openvswitch/ovn-sb.ovsschema
-#	/usr/share/openvswitch/vtep.ovsschema
 
 #
 # Conditional build:
